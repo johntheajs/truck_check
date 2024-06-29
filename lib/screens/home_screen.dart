@@ -181,12 +181,9 @@ class _PDFListScreenState extends State<PDFListScreen> {
       String downloadUrl = await ref.getDownloadURL();
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String filePath = '${appDocDir.path}/PDF_${index + 1}.pdf';
-      File pdfFile = File(filePath);
 
-      // Start download task
-      await ref.writeToFile(pdfFile);
-      await OpenFile.open(pdfFile.path);
-
+      final Uri url = Uri.parse(downloadUrl);
+      launchUrl(url);
       // Show notification after download
 
       setState(() {
