@@ -1,0 +1,24 @@
+{
+  "app_title": "Summary Page",
+  "button_hindi": "Switch to Hindi",
+  "button_arabic": "Switch to Arabic",
+  "summary.awaiting_response": "Awaiting response...",
+
+
+  "EngineRecommendation": {
+    "0": "Adjust tension",
+    "1": "Change oil",
+    "2": "Check fittings",
+    "3": "Check levels",
+    "4": "Check seals",
+    "5": "Clean connections",
+    "6": "Flush system",
+    "7": "Inspect hoses",
+    "8": "Replace cap",
+    "9": "Replace filter",
+    "10": "Replace gasket",
+    "11": "Replace seals"
+  }
+
+
+}

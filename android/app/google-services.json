@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "749419715499",
+    "project_id": "caterpillarhackathon-13ede",
+    "storage_bucket": "caterpillarhackathon-13ede.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749419715499:android:388e2da98f8aa2109490ee",
+        "android_client_info": {
+          "package_name": "com.cat.truck_check"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA88ONBzTWi1N2bvrDtgPFIk6GjUhgTOr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
