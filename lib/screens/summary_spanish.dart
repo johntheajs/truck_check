@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
@@ -22,17 +23,16 @@ import 'package:truck_check/ai/tyre.dart';
 import '../ai/engine.dart';
 import '../models/inspection_data.dart';
 
-class SummaryPage extends StatefulWidget {
-  const SummaryPage({Key? key, required this.inspectionData, required this.hindi}) : super(key: key);
+class SummarySpanishPage extends StatefulWidget {
+  const SummarySpanishPage({Key? key, required this.inspectionData}) : super(key: key);
   final InspectionData inspectionData;
-  final bool hindi;
 
   @override
-  _SummaryPageState createState() => _SummaryPageState();
+  _SummarySpanishPageState createState() => _SummarySpanishPageState();
 }
 
-class _SummaryPageState extends State<SummaryPage> {
-  String responseText = 'Awaiting response...';
+class _SummarySpanishPageState extends State<SummarySpanishPage> {
+  String responseText = 'Esperando respuesta...';
 
   TextEditingController _controller = TextEditingController();
 
@@ -52,12 +52,12 @@ class _SummaryPageState extends State<SummaryPage> {
   Future<String> getTranslation(String text) async{
 
     final modelManager = OnDeviceTranslatorModelManager();
-    if(await modelManager.isModelDownloaded(TranslateLanguage.hindi.bcpCode)) {
+    if(await modelManager.isModelDownloaded(TranslateLanguage.spanish.bcpCode)) {
       await modelManager.downloadModel(
-          TranslateLanguage.hindi.bcpCode);
+          TranslateLanguage.spanish.bcpCode);
     }
 
-    final onDeviceTranslator = OnDeviceTranslator(sourceLanguage: TranslateLanguage.english, targetLanguage: TranslateLanguage.hindi);
+    final onDeviceTranslator = OnDeviceTranslator(sourceLanguage: TranslateLanguage.english, targetLanguage: TranslateLanguage.spanish);
 
     return onDeviceTranslator.translateText(text);
 
@@ -93,15 +93,17 @@ class _SummaryPageState extends State<SummaryPage> {
         ],
       );
 
+      getTranslation(value?.output ?? 'No output').then((text) => {
         setState(() {
-          responseText = value?.output ?? 'No output';
-        });
+        responseText = text ;
+        })
+      });
 
 
     } catch (e, stackTrace) {
       log('Gemini chat error', error: e, stackTrace: stackTrace);
       setState(() {
-        responseText = 'You dont have a stable internet connection';
+        responseText = 'No tienes una conexión a Internet estable.';
       });
     }
 
@@ -129,11 +131,11 @@ class _SummaryPageState extends State<SummaryPage> {
             ),
 
 
-            pw.Header(level: 1, text: widget.hindi?'निरीक्षण परिणाम':'Inspection Details', textStyle: pw.TextStyle(font: ttf)),
+            pw.Header(level: 1, text: 'Detalles de inspección', textStyle: pw.TextStyle(font: ttf)),
             pw.Padding(padding: const pw.EdgeInsets.only(top: 10)),
             pw.Paragraph(
               style: pw.TextStyle(fontSize: 16, color: PdfColors.black, font: ttf),
-              text: widget.hindi?response:responseText,
+              text: response,
 
             ),
           ],
@@ -142,11 +144,11 @@ class _SummaryPageState extends State<SummaryPage> {
     }
 
 
-    final brakePrediction = widget.hindi? await getTranslation(await BrakeModel().getPrediction(widget.inspectionData)):await BrakeModel().getPrediction(widget.inspectionData);
-    final enginePrediction = widget.hindi?await getTranslation(await EngineModel().getPrediction(widget.inspectionData)):await EngineModel().getPrediction(widget.inspectionData);
-    final batteryPrediction = widget.hindi?await getTranslation(await BatteryModel().getPrediction(widget.inspectionData)):await BatteryModel().getPrediction(widget.inspectionData);
-    final exteriorPrediction = widget.hindi?await getTranslation(await ExteriorModel().getPrediction(widget.inspectionData)): await ExteriorModel().getPrediction(widget.inspectionData);
-    final tyrePrediction = widget.hindi? await getTranslation(await TyreModel().getPrediction(widget.inspectionData)): await TyreModel().getPrediction(widget.inspectionData);
+    final brakePrediction = await getTranslation(await BrakeModel().getPrediction(widget.inspectionData));
+    final enginePrediction =await getTranslation(await EngineModel().getPrediction(widget.inspectionData));
+    final batteryPrediction = await getTranslation(await BatteryModel().getPrediction(widget.inspectionData));
+    final exteriorPrediction = await getTranslation(await ExteriorModel().getPrediction(widget.inspectionData));
+    final tyrePrediction =  await getTranslation(await TyreModel().getPrediction(widget.inspectionData));
 
 
     pdf.addPage(
@@ -187,12 +189,12 @@ class _SummaryPageState extends State<SummaryPage> {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle('Brake Recommendation', brakePrediction),
+              _buildSectionTitle('Recomendación de freno', brakePrediction),
               _buildSectionTitle('Engine Recommendation', enginePrediction),
-              _buildSectionTitle('Battery Recommendation', batteryPrediction),
-              _buildSectionTitle('Exterior Recommendation', exteriorPrediction),
-              _buildSectionTitle('Tyre Recommendation', tyrePrediction),
-              _buildSectionTitle("Inspection Notes", widget.inspectionData.inspectionNotes)
+              _buildSectionTitle('Recomendación del motor', batteryPrediction),
+              _buildSectionTitle('Recomendación exterior', exteriorPrediction),
+              _buildSectionTitle('Recomendación de neumáticos', tyrePrediction),
+              _buildSectionTitle("Notas de inspección", widget.inspectionData.inspectionNotes)
             ],
           );
         },
@@ -237,7 +239,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inspection Summary'),
+        title: const Text('Resumen de inspección'),
         backgroundColor: Colors.lightBlueAccent,
         actions: [
           IconButton(
@@ -253,7 +255,7 @@ class _SummaryPageState extends State<SummaryPage> {
           children: [
             InspectionSummaryPage(inspectionData: widget.inspectionData),
             Text(
-              'Inspection Results',
+              'Resultados de la inspección',
               style: Theme.of(context).textTheme.headline5?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.blueAccent,
@@ -261,27 +263,41 @@ class _SummaryPageState extends State<SummaryPage> {
             ),
             const SizedBox(height: 20),
 
-            MarkdownBody(
-              data: responseText,
-              styleSheet: MarkdownStyleSheet(
-                p: Theme.of(context).textTheme.bodyText1?.copyWith(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-                h1: Theme.of(context).textTheme.headline5?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
-                ),
-                h2: Theme.of(context).textTheme.headline6?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
-                ),
-                // Add more styles as needed
-              ),
-            ),
-            const SizedBox(height: 20),
+          FutureBuilder(
+            future: getTranslation(responseText),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData) {
+                return Center(child: Text('No data'));
+              } else {
+                return MarkdownBody(
+                  data: snapshot.data as String,
+                  styleSheet: MarkdownStyleSheet(
+                    p: Theme.of(context).textTheme.bodyText1?.copyWith(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                    h1: Theme.of(context).textTheme.headline5?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueAccent,
+                    ),
+                    h2: Theme.of(context).textTheme.headline6?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueAccent,
+                    ),
+                    // Add more styles as needed
+                  ),
+                );
+              }
+            },
+          ),
+
+          const SizedBox(height: 20),
             Text(
-              'Recommended Actions',
+              'Acciones recomendadas',
               style: Theme.of(context).textTheme.headline5?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -295,7 +311,7 @@ class _SummaryPageState extends State<SummaryPage> {
             widget.inspectionData.inspectionNotes = value;
           },
           decoration: InputDecoration(
-            hintText: 'Enter inspection notes here...',
+            hintText: 'Introduzca aquí las notas de inspección...',
             border: OutlineInputBorder(),
           )
         )
@@ -318,15 +334,15 @@ class InspectionSummaryPage extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          _buildSectionTitle('Tire Information', inspectionData.tireImages),
+          _buildSectionTitle('Información sobre neumáticos', inspectionData.tireImages),
           _buildTireInfo(),
-          _buildSectionTitle('Battery Information', inspectionData.batteryImages),
+          _buildSectionTitle('Información de la batería', inspectionData.batteryImages),
           _buildBatteryInfo(),
-          _buildSectionTitle('Exterior Information', inspectionData.exteriorImages),
+          _buildSectionTitle('Información exterior', inspectionData.exteriorImages),
           _buildExteriorInfo(),
-          _buildSectionTitle('Brake Information', inspectionData.brakeImages),
+          _buildSectionTitle('Información de frenos', inspectionData.brakeImages),
           _buildBrakeInfo(),
-          _buildSectionTitle('Engine Information', inspectionData.engineImages),
+          _buildSectionTitle('Información del motor', inspectionData.engineImages),
           _buildEngineInfo(),
           InspectionResultsWidget(data: inspectionData)
         ],
@@ -378,14 +394,14 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Left Front Tire Pressure', '${inspectionData.leftFrontTirePressure} psi'),
-          _buildListTile('Right Front Tire Pressure', '${inspectionData.rightFrontTirePressure} psi'),
-          _buildListTile('Left Front Tire Condition', inspectionData.leftFrontTireCondition),
-          _buildListTile('Right Front Tire Condition', inspectionData.rightFrontTireCondition),
-          _buildListTile('Left Rear Tire Pressure', '${inspectionData.leftRearTirePressure} psi'),
-          _buildListTile('Right Rear Tire Pressure', '${inspectionData.rightRearTirePressure} psi'),
-          _buildListTile('Left Rear Tire Condition', inspectionData.leftRearTireCondition),
-          _buildListTile('Right Rear Tire Condition', inspectionData.rightRearTireCondition),
+          _buildListTile('Presión del Neumático Delantero Izquierdo', '${inspectionData.leftFrontTirePressure} psi'),
+          _buildListTile('Presión del Neumático Delantero Derecho', '${inspectionData.rightFrontTirePressure} psi'),
+          _buildListTile('Condición del Neumático Delantero Izquierdo', inspectionData.leftFrontTireCondition),
+          _buildListTile('Condición del Neumático Delantero Derecho', inspectionData.rightFrontTireCondition),
+          _buildListTile('Presión del Neumático Trasero Izquierdo', '${inspectionData.leftRearTirePressure} psi'),
+          _buildListTile('Presión del Neumático Trasero Derecho', '${inspectionData.rightRearTirePressure} psi'),
+          _buildListTile('Condición del Neumático Trasero Izquierdo', inspectionData.leftRearTireCondition),
+          _buildListTile('Condición del Neumático Trasero Derecho', inspectionData.rightRearTireCondition),
         ],
       ),
     );
@@ -395,12 +411,12 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Battery Make', inspectionData.batteryMake),
-          _buildListTile('Battery Replacement Date', inspectionData.batteryReplacementDate),
-          _buildListTile('Battery Voltage', '${inspectionData.batteryVoltage} V'),
-          _buildListTile('Battery Water Level', inspectionData.batteryWaterLevel),
-          _buildListTile('Battery Damage', inspectionData.batteryDamage ? 'Yes' : 'No'),
-          _buildListTile('Battery Leak', inspectionData.batteryLeak ? 'Yes' : 'No'),
+          _buildListTile('Marca de la Batería', inspectionData.batteryMake),
+          _buildListTile('Fecha de Reemplazo de la Batería', inspectionData.batteryReplacementDate),
+          _buildListTile('Voltaje de la Batería', '${inspectionData.batteryVoltage} V'),
+          _buildListTile('Nivel de Agua de la Batería', inspectionData.batteryWaterLevel),
+          _buildListTile('Daño en la Batería', inspectionData.batteryDamage ? 'Sí' : 'No'),
+          _buildListTile('Fuga de la Batería', inspectionData.batteryLeak ? 'Sí' : 'No'),
         ],
       ),
     );
@@ -410,9 +426,10 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Exterior Damage', inspectionData.exteriorDamage ? 'Yes' : 'No'),
-          _buildListTile('Exterior Notes', inspectionData.exteriorNotes),
-          _buildListTile('Oil Leak Suspension', inspectionData.oilLeakSuspension ? 'Yes' : 'No'),
+          _buildListTile('Daño Exterior', inspectionData.exteriorDamage ? 'Sí' : 'No'),
+      _buildListTile('Notas del Exterior', inspectionData.exteriorNotes),
+      _buildListTile('Fuga de Aceite en la Suspensión', inspectionData.oilLeakSuspension ? 'Sí' : 'No'),
+
         ],
       ),
     );
@@ -422,12 +439,12 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Brake Fluid Level', inspectionData.brakeFluidLevel),
-          _buildListTile('Brake Condition Front', inspectionData.brakeConditionFront),
-          _buildListTile('Brake Condition Rear', inspectionData.brakeConditionRear),
-          _buildListTile('Emergency Brake Condition', inspectionData.emergencyBrakeCondition),
-          _buildListTile('Brake Fluid Condition', inspectionData.brakeFluidCondition),
-          _buildListTile('Brake Fluid Color', inspectionData.brakeFluidColor),
+          _buildListTile('Nivel del Líquido de Frenos', inspectionData.brakeFluidLevel),
+          _buildListTile('Condición del Freno Delantero', inspectionData.brakeConditionFront),
+          _buildListTile('Condición del Freno Trasero', inspectionData.brakeConditionRear),
+          _buildListTile('Condición del Freno de Emergencia', inspectionData.emergencyBrakeCondition),
+          _buildListTile('Condición del Líquido de Frenos', inspectionData.brakeFluidCondition),
+          _buildListTile('Color del Líquido de Frenos', inspectionData.brakeFluidColor),
         ],
       ),
     );
@@ -437,11 +454,11 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Engine Damage', inspectionData.engineDamage ? 'Yes' : 'No'),
-          _buildListTile('Engine Damage Notes', inspectionData.engineDamageNotes),
-          _buildListTile('Engine Oil Condition', inspectionData.engineOilCondition),
-          _buildListTile('Engine Oil Color', inspectionData.engineOilColor),
-          _buildListTile('Engine Oil Leak', inspectionData.engineOilLeak ? 'Yes' : 'No'),
+          _buildListTile('Daño del Motor', inspectionData.engineDamage ? 'Sí' : 'No'),
+          _buildListTile('Notas de Daño del Motor', inspectionData.engineDamageNotes),
+          _buildListTile('Condición del Aceite del Motor', inspectionData.engineOilCondition),
+          _buildListTile('Color del Aceite del Motor', inspectionData.engineOilColor),
+          _buildListTile('Fuga de Aceite del Motor', inspectionData.engineOilLeak ? 'Sí' : 'No'),
         ],
       ),
     );
@@ -468,15 +485,15 @@ class InspectionSummaryPdf extends pw.StatelessWidget {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Tire Information', inspectionData.tireImages),
+          _buildSectionTitle('Información de los Neumáticos', inspectionData.tireImages),
           _buildTireInfo(),
-          _buildSectionTitle('Battery Information', inspectionData.batteryImages),
+          _buildSectionTitle('Información de la Batería', inspectionData.batteryImages),
           _buildBatteryInfo(),
-          _buildSectionTitle('Exterior Information', inspectionData.exteriorImages),
+          _buildSectionTitle('Información del Exterior', inspectionData.exteriorImages),
           _buildExteriorInfo(),
-          _buildSectionTitle('Brake Information', inspectionData.brakeImages),
+          _buildSectionTitle('Información de los Frenos', inspectionData.brakeImages),
           _buildBrakeInfo(),
-          _buildSectionTitle('Engine Information', inspectionData.engineImages),
+          _buildSectionTitle('Información del Motor', inspectionData.engineImages),
           _buildEngineInfo(),
         ],
       ),
@@ -525,29 +542,28 @@ class InspectionSummaryPdf extends pw.StatelessWidget {
     return pw.Container(
       child: pw.Column(
         children: [
-          _buildListTile('Left Front Tire Pressure', '${inspectionData.leftFrontTirePressure} psi'),
-          _buildListTile('Right Front Tire Pressure', '${inspectionData.rightFrontTirePressure} psi'),
-          _buildListTile('Left Front Tire Condition', inspectionData.leftFrontTireCondition),
-          _buildListTile('Right Front Tire Condition', inspectionData.rightFrontTireCondition),
-          _buildListTile('Left Rear Tire Pressure', '${inspectionData.leftRearTirePressure} psi'),
-          _buildListTile('Right Rear Tire Pressure', '${inspectionData.rightRearTirePressure} psi'),
-          _buildListTile('Left Rear Tire Condition', inspectionData.leftRearTireCondition),
-          _buildListTile('Right Rear Tire Condition', inspectionData.rightRearTireCondition),
+          _buildListTile('Presión del Neumático Delantero Izquierdo', '${inspectionData.leftFrontTirePressure} psi'),
+          _buildListTile('Presión del Neumático Delantero Derecho', '${inspectionData.rightFrontTirePressure} psi'),
+          _buildListTile('Condición del Neumático Delantero Izquierdo', inspectionData.leftFrontTireCondition),
+          _buildListTile('Condición del Neumático Delantero Derecho', inspectionData.rightFrontTireCondition),
+          _buildListTile('Presión del Neumático Trasero Izquierdo', '${inspectionData.leftRearTirePressure} psi'),
+          _buildListTile('Presión del Neumático Trasero Derecho', '${inspectionData.rightRearTirePressure} psi'),
+          _buildListTile('Condición del Neumático Trasero Izquierdo', inspectionData.leftRearTireCondition),
+          _buildListTile('Condición del Neumático Trasero Derecho', inspectionData.rightRearTireCondition),
         ],
       ),
     );
   }
-
   pw.Widget _buildBatteryInfo() {
     return pw.Container(
       child: pw.Column(
         children: [
-          _buildListTile('Battery Make', inspectionData.batteryMake),
-          _buildListTile('Battery Replacement Date', inspectionData.batteryReplacementDate),
-          _buildListTile('Battery Voltage', '${inspectionData.batteryVoltage} V'),
-          _buildListTile('Battery Water Level', inspectionData.batteryWaterLevel),
-          _buildListTile('Battery Damage', inspectionData.batteryDamage ? 'Yes' : 'No'),
-          _buildListTile('Battery Leak', inspectionData.batteryLeak ? 'Yes' : 'No'),
+          _buildListTile('Marca de la Batería', inspectionData.batteryMake),
+          _buildListTile('Fecha de Reemplazo de la Batería', inspectionData.batteryReplacementDate),
+          _buildListTile('Voltaje de la Batería', '${inspectionData.batteryVoltage} V'),
+          _buildListTile('Nivel de Agua de la Batería', inspectionData.batteryWaterLevel),
+          _buildListTile('Daño en la Batería', inspectionData.batteryDamage ? 'Sí' : 'No'),
+          _buildListTile('Fuga de la Batería', inspectionData.batteryLeak ? 'Sí' : 'No'),
         ],
       ),
     );
@@ -557,9 +573,9 @@ class InspectionSummaryPdf extends pw.StatelessWidget {
     return pw.Container(
       child: pw.Column(
         children: [
-          _buildListTile('Exterior Damage', inspectionData.exteriorDamage ? 'Yes' : 'No'),
-          _buildListTile('Exterior Notes', inspectionData.exteriorNotes),
-          _buildListTile('Oil Leak Suspension', inspectionData.oilLeakSuspension ? 'Yes' : 'No'),
+          _buildListTile('Daño Exterior', inspectionData.exteriorDamage ? 'Sí' : 'No'),
+          _buildListTile('Notas del Exterior', inspectionData.exteriorNotes),
+          _buildListTile('Fuga de Aceite en la Suspensión', inspectionData.oilLeakSuspension ? 'Sí' : 'No'),
         ],
       ),
     );
@@ -569,12 +585,12 @@ class InspectionSummaryPdf extends pw.StatelessWidget {
     return pw.Container(
       child: pw.Column(
         children: [
-          _buildListTile('Brake Fluid Level', inspectionData.brakeFluidLevel),
-          _buildListTile('Brake Condition Front', inspectionData.brakeConditionFront),
-          _buildListTile('Brake Condition Rear', inspectionData.brakeConditionRear),
-          _buildListTile('Emergency Brake Condition', inspectionData.emergencyBrakeCondition),
-          _buildListTile('Brake Fluid Condition', inspectionData.brakeFluidCondition),
-          _buildListTile('Brake Fluid Color', inspectionData.brakeFluidColor),
+          _buildListTile('Nivel del Líquido de Frenos', inspectionData.brakeFluidLevel),
+          _buildListTile('Condición del Freno Delantero', inspectionData.brakeConditionFront),
+          _buildListTile('Condición del Freno Trasero', inspectionData.brakeConditionRear),
+          _buildListTile('Condición del Freno de Emergencia', inspectionData.emergencyBrakeCondition),
+          _buildListTile('Condición del Líquido de Frenos', inspectionData.brakeFluidCondition),
+          _buildListTile('Color del Líquido de Frenos', inspectionData.brakeFluidColor),
         ],
       ),
     );
@@ -584,11 +600,11 @@ class InspectionSummaryPdf extends pw.StatelessWidget {
     return pw.Container(
       child: pw.Column(
         children: [
-          _buildListTile('Engine Damage', inspectionData.engineDamage ? 'Yes' : 'No'),
-          _buildListTile('Engine Damage Notes', inspectionData.engineDamageNotes),
-          _buildListTile('Engine Oil Condition', inspectionData.engineOilCondition),
-          _buildListTile('Engine Oil Color', inspectionData.engineOilColor),
-          _buildListTile('Engine Oil Leak', inspectionData.engineOilLeak ? 'Yes' : 'No'),
+          _buildListTile('Daño del Motor', inspectionData.engineDamage ? 'Sí' : 'No'),
+          _buildListTile('Notas de Daño del Motor', inspectionData.engineDamageNotes),
+          _buildListTile('Condición del Aceite del Motor', inspectionData.engineOilCondition),
+          _buildListTile('Color del Aceite del Motor', inspectionData.engineOilColor),
+          _buildListTile('Fuga de Aceite del Motor', inspectionData.engineOilLeak ? 'Sí' : 'No'),
         ],
       ),
     );

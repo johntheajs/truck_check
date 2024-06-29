@@ -55,6 +55,11 @@ dependencies:
   url_launcher: ^6.3.0
   intl: ^0.18.1
 
+flutter_icons:
+    android: true
+    ios: true
+    image_path: "assets/icon/icon.png"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -86,6 +91,8 @@ flutter:
      - assets/battery.tflite
      - assets/brake.tflite
      - assets/fonts/hindi.ttf
+     - assets/fonts/russian.ttf
+
 
   #   - images/a_dot_ham.jpeg
 

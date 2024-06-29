@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:truck_check/models/inspection_data.dart';
 import 'package:truck_check/screens/summary.dart';
+import 'package:truck_check/screens/summary_russian.dart';
+import 'package:truck_check/screens/summary_spanish.dart';
 
 
 class CarPartsScreen extends StatefulWidget {
@@ -75,12 +77,38 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
+                    // MaterialPageRoute(
+                    //   builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: false,),
+                    // ),
+                      MaterialPageRoute(
+                       builder: (context) => SummarySpanishPage(inspectionData: widget.inspectionData),
+                       )
+                  );
+                },
+                child: Text('Generate in Spanish'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+
+                      MaterialPageRoute(
+                        builder: (context) => SummaryRussianPage(inspectionData: widget.inspectionData),
+                      )
+                  );
+                },
+                child: Text('Generate in Russian'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
                     MaterialPageRoute(
                       builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: false,),
                     ),
                   );
                 },
-                child: Text('Generate Summary'),
+                child: Text('Generate in English'),
               ),
               ElevatedButton(
                 onPressed: () {
