@@ -23,18 +23,7 @@ void main() async{
     await modelManager.downloadModel(
         TranslateLanguage.hindi.bcpCode);
   }
-  if(await modelManager.isModelDownloaded(TranslateLanguage.russian.bcpCode)) {
-    await modelManager.downloadModel(
-        TranslateLanguage.russian.bcpCode);
-  }
-  if(await modelManager.isModelDownloaded(TranslateLanguage.french.bcpCode)) {
-    await modelManager.downloadModel(
-        TranslateLanguage.french.bcpCode);
-  }
-  if(await modelManager.isModelDownloaded(TranslateLanguage.arabic.bcpCode)) {
-    await modelManager.downloadModel(
-        TranslateLanguage.arabic.bcpCode);
-  }
+
   runApp(const MyApp());
 }
 

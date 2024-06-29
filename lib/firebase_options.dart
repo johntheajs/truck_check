@@ -23,20 +23,11 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -66,4 +57,33 @@ class DefaultFirebaseOptions {
     projectId: 'caterpillarhackathon-13ede',
     storageBucket: 'caterpillarhackathon-13ede.appspot.com',
   );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAKP6R0kxDbyM3yul1a22p7gpVLmPRkhvc',
+    appId: '1:749419715499:ios:842b4d8cd5b909289490ee',
+    messagingSenderId: '749419715499',
+    projectId: 'caterpillarhackathon-13ede',
+    storageBucket: 'caterpillarhackathon-13ede.appspot.com',
+    iosBundleId: 'com.cat.truckCheck',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAKP6R0kxDbyM3yul1a22p7gpVLmPRkhvc',
+    appId: '1:749419715499:ios:842b4d8cd5b909289490ee',
+    messagingSenderId: '749419715499',
+    projectId: 'caterpillarhackathon-13ede',
+    storageBucket: 'caterpillarhackathon-13ede.appspot.com',
+    iosBundleId: 'com.cat.truckCheck',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyATT9h9ULBU9KH1QHe2tE2yPI8-KWVkM8U',
+    appId: '1:749419715499:web:ca63e12fdf61f2729490ee',
+    messagingSenderId: '749419715499',
+    projectId: 'caterpillarhackathon-13ede',
+    authDomain: 'caterpillarhackathon-13ede.firebaseapp.com',
+    storageBucket: 'caterpillarhackathon-13ede.appspot.com',
+    measurementId: 'G-5Z5JNC3ME6',
+  );
+
 }

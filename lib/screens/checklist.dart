@@ -76,12 +76,23 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SummaryPage(inspectionData: widget.inspectionData),
+                      builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: false,),
                     ),
                   );
                 },
                 child: Text('Generate Summary'),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: true,),
+                    ),
+                  );
+                },
+                child: Text('Generate in Hindi'),
+              )
             ],
           ),
         ),

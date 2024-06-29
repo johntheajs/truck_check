@@ -7,7 +7,6 @@ import 'package:truck_check/models/inspection_data.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:io';
 import '../components/ComplaintCard.dart';
 
@@ -146,8 +145,6 @@ class PDFListScreen extends StatefulWidget {
 class _PDFListScreenState extends State<PDFListScreen> {
   late List<Reference> pdfReferences;
   late FirebaseStorage storage;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -166,13 +163,6 @@ class _PDFListScreenState extends State<PDFListScreen> {
     } catch (e) {
       print('Error fetching PDF list: $e');
     }
-  }
-
-  void initializeNotifications() {
-    var initializationSettingsAndroid =
-    AndroidInitializationSettings('app_icon');
-    InitializationSettings settings = InitializationSettings(android:initializationSettingsAndroid);
-    flutterLocalNotificationsPlugin.initialize(settings);
   }
 
   Future<void> downloadPDF(int index) async {

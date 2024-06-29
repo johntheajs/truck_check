@@ -7,8 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -22,8 +24,9 @@ import '../ai/engine.dart';
 import '../models/inspection_data.dart';
 
 class SummaryPage extends StatefulWidget {
-  const SummaryPage({Key? key, required this.inspectionData}) : super(key: key);
+  const SummaryPage({Key? key, required this.inspectionData, required this.hindi}) : super(key: key);
   final InspectionData inspectionData;
+  final bool hindi;
 
   @override
   _SummaryPageState createState() => _SummaryPageState();
@@ -31,6 +34,7 @@ class SummaryPage extends StatefulWidget {
 
 class _SummaryPageState extends State<SummaryPage> {
   String responseText = 'Awaiting response...';
+
   TextEditingController _controller = TextEditingController();
 
   @override
@@ -43,7 +47,24 @@ class _SummaryPageState extends State<SummaryPage> {
   void initState() {
     super.initState();
     _sendMessage();
+    }
+
+
+  Future<String> getTranslation(String text) async{
+
+    final modelManager = OnDeviceTranslatorModelManager();
+    if(await modelManager.isModelDownloaded(TranslateLanguage.hindi.bcpCode)) {
+      await modelManager.downloadModel(
+          TranslateLanguage.hindi.bcpCode);
+    }
+
+    final onDeviceTranslator = OnDeviceTranslator(sourceLanguage: TranslateLanguage.english, targetLanguage: TranslateLanguage.hindi);
+
+    return onDeviceTranslator.translateText(text);
+
   }
+
+
 
   Future<void> _sendMessage() async {
     try {
@@ -73,9 +94,10 @@ class _SummaryPageState extends State<SummaryPage> {
         ],
       );
 
-      setState(() {
-        responseText = value?.output ?? 'No output';
-      });
+        setState(() {
+          responseText = value?.output ?? 'No output';
+        });
+
 
     } catch (e, stackTrace) {
       log('Gemini chat error', error: e, stackTrace: stackTrace);
@@ -89,8 +111,15 @@ class _SummaryPageState extends State<SummaryPage> {
   Future<void> _saveAsPDF() async {
     final pdf = pw.Document();
 
+    final fontData = await rootBundle.load('assets/fonts/hindi.ttf');
+    final ttf = pw.Font.ttf(fontData);
+
+
+    final response = await getTranslation(responseText);
+
     // Function to build inspection summary content
     void _buildInspectionSummaryContent() {
+
       pdf.addPage(
         pw.MultiPage(
           pageFormat: PdfPageFormat.a4,
@@ -99,11 +128,14 @@ class _SummaryPageState extends State<SummaryPage> {
               margin: const pw.EdgeInsets.only(bottom: 10),
               child: InspectionSummaryPdf(inspectionData: widget.inspectionData),
             ),
-            pw.Header(level: 1, text: 'Inspection Results'),
+
+
+            pw.Header(level: 1, text: widget.hindi?'निरीक्षण परिणाम':'Inspection Details', textStyle: pw.TextStyle(font: ttf)),
             pw.Padding(padding: const pw.EdgeInsets.only(top: 10)),
             pw.Paragraph(
-              style: pw.TextStyle(fontSize: 16, color: PdfColors.black),
-              text: responseText,
+              style: pw.TextStyle(fontSize: 16, color: PdfColors.black, font: ttf),
+              text: widget.hindi?response:responseText,
+
             ),
           ],
         ),
@@ -111,12 +143,11 @@ class _SummaryPageState extends State<SummaryPage> {
     }
 
 
-
-    final brakePrediction = await BrakeModel().getPrediction(widget.inspectionData);
-    final enginePrediction = await EngineModel().getPrediction(widget.inspectionData);
-    final batteryPrediction = await BatteryModel().getPrediction(widget.inspectionData);
-    final exteriorPrediction = await ExteriorModel().getPrediction(widget.inspectionData);
-    final tyrePrediction = await TyreModel().getPrediction(widget.inspectionData);
+    final brakePrediction = widget.hindi? await getTranslation(await BrakeModel().getPrediction(widget.inspectionData)):await BrakeModel().getPrediction(widget.inspectionData);
+    final enginePrediction = widget.hindi?await getTranslation(await EngineModel().getPrediction(widget.inspectionData)):await EngineModel().getPrediction(widget.inspectionData);
+    final batteryPrediction = widget.hindi?await getTranslation(await BatteryModel().getPrediction(widget.inspectionData)):await BatteryModel().getPrediction(widget.inspectionData);
+    final exteriorPrediction = widget.hindi?await getTranslation(await ExteriorModel().getPrediction(widget.inspectionData)): await ExteriorModel().getPrediction(widget.inspectionData);
+    final tyrePrediction = widget.hindi? await getTranslation(await TyreModel().getPrediction(widget.inspectionData)): await TyreModel().getPrediction(widget.inspectionData);
 
 
     pdf.addPage(
@@ -143,6 +174,7 @@ class _SummaryPageState extends State<SummaryPage> {
                   child: pw.Text(
                     subtitle,
                     style: pw.TextStyle(
+                      font: ttf,
                       fontSize: 14,
                       fontWeight: pw.FontWeight.bold,
                       color: PdfColors.black,
@@ -202,6 +234,8 @@ class _SummaryPageState extends State<SummaryPage> {
   
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inspection Summary'),
@@ -227,6 +261,7 @@ class _SummaryPageState extends State<SummaryPage> {
               ),
             ),
             const SizedBox(height: 20),
+
             MarkdownBody(
               data: responseText,
               styleSheet: MarkdownStyleSheet(
