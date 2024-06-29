@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:truck_check/models/inspection_data.dart';
 import 'package:truck_check/screens/summary.dart';
+import 'package:truck_check/screens/summary_french.dart';
 import 'package:truck_check/screens/summary_russian.dart';
 import 'package:truck_check/screens/summary_spanish.dart';
 
@@ -86,6 +87,32 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                   );
                 },
                 child: Text('Generate in Spanish'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      // MaterialPageRoute(
+                      //   builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: false,),
+                      // ),
+                      MaterialPageRoute(
+                        builder: (context) => SummaryFrenchPage(inspectionData: widget.inspectionData),
+                      )
+                  );
+                },
+                child: Text('Generate in French'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+
+                      MaterialPageRoute(
+                        builder: (context) => SummaryRussianPage(inspectionData: widget.inspectionData),
+                      )
+                  );
+                },
+                child: Text('Generate in Russian'),
               ),
               ElevatedButton(
                 onPressed: () {
