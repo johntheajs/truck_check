@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -171,12 +175,28 @@ class _SummaryPageState extends State<SummaryPage> {
     _buildInspectionSummaryContent();
 
     // Save PDF to local storage
-    final output = await getTemporaryDirectory();
-    final file = File('${output.path}/summary.pdf');
-    await file.writeAsBytes(await pdf.save());
 
-    // Open the PDF file
-    await OpenFile.open(file.path);
+      // Save PDF to temporary directory
+      final output = await getTemporaryDirectory();
+      final file = File('${output.path}/summary.pdf');
+      await file.writeAsBytes(await pdf.save());
+
+      // Upload PDF to Firebase Storage
+      FirebaseStorage storage = FirebaseStorage.instance;
+      final ref = storage.ref();
+      final pdfRef = ref.child('pdfs/${widget.inspectionData.inspectionId}.pdf'); // Replace with your desired path and filename
+
+      try {
+        await pdfRef.putFile(file);
+      } on FirebaseException catch (e) {
+        print(e);
+      }
+
+
+      await OpenFile.open(file.path);
+
+
+
   }
 
   

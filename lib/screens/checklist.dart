@@ -5,24 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:truck_check/models/inspection_data.dart';
 import 'package:truck_check/screens/summary.dart';
 
-void main() {
-  runApp(CarPartsApp());
-}
-
-class CarPartsApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Car Parts Inspection',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: CarPartsScreen(),
-    );
-  }
-}
 
 class CarPartsScreen extends StatefulWidget {
+
+  final inspectionData;
+  const CarPartsScreen ({ Key? key, this.inspectionData }): super(key: key);
+
   @override
   _CarPartsScreenState createState() => _CarPartsScreenState();
 }
@@ -34,7 +22,6 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
   bool _showBrakesForm = false;
   bool _showEngineForm = false;
 
-  final InspectionData _inspectionData = InspectionData();
 
   @override
   Widget build(BuildContext context) {
@@ -58,38 +45,38 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                   _showTiresForm = !_showTiresForm;
                 });
               }),
-              if (_showTiresForm) TiresForm(inspectionData: _inspectionData),
+              if (_showTiresForm) TiresForm(inspectionData: widget.inspectionData),
               _buildHeader('Battery', () {
                 setState(() {
                   _showBatteryForm = !_showBatteryForm;
                 });
               }),
-              if (_showBatteryForm) BatteryForm(inspectionData: _inspectionData),
+              if (_showBatteryForm) BatteryForm(inspectionData: widget.inspectionData),
               _buildHeader('Exterior', () {
                 setState(() {
                   _showExteriorForm = !_showExteriorForm;
                 });
               }),
-              if (_showExteriorForm) ExteriorForm(inspectionData: _inspectionData),
+              if (_showExteriorForm) ExteriorForm(inspectionData: widget.inspectionData),
               _buildHeader('Brakes', () {
                 setState(() {
                   _showBrakesForm = !_showBrakesForm;
                 });
               }),
-              if (_showBrakesForm) BrakesForm(inspectionData: _inspectionData),
+              if (_showBrakesForm) BrakesForm(inspectionData: widget.inspectionData),
               _buildHeader('Engine', () {
                 setState(() {
                   _showEngineForm = !_showEngineForm;
                 });
               }),
-              if (_showEngineForm) EngineForm(inspectionData: _inspectionData),
+              if (_showEngineForm) EngineForm(inspectionData: widget.inspectionData),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SummaryPage(inspectionData: _inspectionData),
+                      builder: (context) => SummaryPage(inspectionData: widget.inspectionData),
                     ),
                   );
                 },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:truck_check/screens/login_screen.dart';
+import 'models/inspection_data.dart';
 import 'screens/complaints.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,9 +58,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.inspectionData});
 
-  final String title;
+  final InspectionData inspectionData;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -71,26 +72,26 @@ class _MyHomePageState extends State<MyHomePage> {
   final PageController _pageController = PageController();
   final List<Map<String, String>> checklistItems = [
     {'title': 'Hat', 'description': 'Protects from sunlight and minor debris.'},
-    // {'title': 'Suit', 'description': 'Full-body coverall to keep clothes clean and provide protection.'},
-    // {'title': 'Stylus Pen', 'description': 'For accurate input on touch screens.'},
-    // {'title': 'Gloves', 'description': 'Protects hands from dirt, grime, and minor injuries.'},
-    // {'title': 'Glasses', 'description': 'Safety glasses to protect eyes from debris and chemical splashes.'},
-    // {'title': 'Equipment Box', 'description': 'Holds and organizes all necessary tools and equipment.'},
-    // {'title': 'High-Visibility Vest', 'description': 'Ensures visibility in all work environments.'},
-    // {'title': 'Ear Protection', 'description': 'Necessary in loud environments to prevent hearing damage.'},
-    // {'title': 'Face Mask/Respirator', 'description': 'Protects against dust, fumes, and other airborne particles.'},
-    // {'title': 'Flashlight', 'description': 'Essential for inspecting dark or hard-to-see areas.'},
-    // {'title': 'Inspection Mirror', 'description': 'Useful for viewing parts of the vehicle that are difficult to see directly.'},
-    // {'title': 'Digital Camera/Smartphone', 'description': 'For documenting the condition of the vehicle and any issues found.'},
-    // {'title': 'First Aid Kit', 'description': 'For any minor injuries that might occur.'},
-    // {'title': 'Tablet or Laptop', 'description': 'For accessing digital manuals, checklists, and recording data.'},
+    {'title': 'Suit', 'description': 'Full-body coverall to keep clothes clean and provide protection.'},
+    {'title': 'Stylus Pen', 'description': 'For accurate input on touch screens.'},
+    {'title': 'Gloves', 'description': 'Protects hands from dirt, grime, and minor injuries.'},
+    {'title': 'Glasses', 'description': 'Safety glasses to protect eyes from debris and chemical splashes.'},
+    {'title': 'Equipment Box', 'description': 'Holds and organizes all necessary tools and equipment.'},
+    {'title': 'High-Visibility Vest', 'description': 'Ensures visibility in all work environments.'},
+    {'title': 'Ear Protection', 'description': 'Necessary in loud environments to prevent hearing damage.'},
+    {'title': 'Face Mask/Respirator', 'description': 'Protects against dust, fumes, and other airborne particles.'},
+    {'title': 'Flashlight', 'description': 'Essential for inspecting dark or hard-to-see areas.'},
+    {'title': 'Inspection Mirror', 'description': 'Useful for viewing parts of the vehicle that are difficult to see directly.'},
+    {'title': 'Digital Camera/Smartphone', 'description': 'For documenting the condition of the vehicle and any issues found.'},
+    {'title': 'First Aid Kit', 'description': 'For any minor injuries that might occur.'},
+    {'title': 'Tablet or Laptop', 'description': 'For accessing digital manuals, checklists, and recording data.'},
   ];
 
   void _goToNextPage() {
     if (_pageController.page!.toInt() == checklistItems.length - 1) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ComplaintsScreen()),
+        MaterialPageRoute(builder: (context) => ComplaintsScreen(inspectionData: widget.inspectionData,)),
       );
     } else {
       _pageController.nextPage(
@@ -105,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text(widget.inspectionData.customerName),
       ),
       body: PageView.builder(
         controller: _pageController,

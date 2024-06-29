@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import '../models/inspection_data.dart';
 import 'checklist.dart';
 
 class ComplaintsScreen extends StatelessWidget {
+
+  final InspectionData inspectionData;
+
+  const ComplaintsScreen({
+    required this.inspectionData,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +28,7 @@ class ComplaintsScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CarPartsScreen()),
+                  MaterialPageRoute(builder: (context) => CarPartsScreen(inspectionData: inspectionData,)),
                 );
               },
             ),

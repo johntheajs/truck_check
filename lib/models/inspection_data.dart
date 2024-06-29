@@ -1,6 +1,17 @@
 import 'dart:io';
 
 class InspectionData {
+  final String truckSerialNumber;
+  final String truckModel;
+  final int inspectionId;
+  final String dateTime;
+  final String location;
+  final String geoCoordinates;
+  final String serviceMeterHours;
+  final String inspectorSignature;
+  final String customerName;
+  final String catCustomerId;
+  final String url;
   int leftFrontTirePressure;
   int rightFrontTirePressure;
   String leftFrontTireCondition;
@@ -38,6 +49,17 @@ class InspectionData {
   List<File> engineImages = [];
 
   InspectionData({
+    required this.url,
+    required this.truckSerialNumber,
+    required this.truckModel,
+    required this.inspectionId,
+    required this.dateTime,
+    required this.location,
+    required this.geoCoordinates,
+    required this.serviceMeterHours,
+    required this.inspectorSignature,
+    required this.customerName,
+    required this.catCustomerId,
     this.leftFrontTirePressure = 0,
     this.rightFrontTirePressure = 0,
     this.leftFrontTireCondition = '',
