@@ -25,7 +25,8 @@ import '../ai/engine.dart';
 import '../models/inspection_data.dart';
 
 class SummaryRussianPage extends StatefulWidget {
-  const SummaryRussianPage({Key? key, required this.inspectionData}) : super(key: key);
+  const SummaryRussianPage({Key? key, required this.inspectionData})
+      : super(key: key);
   final InspectionData inspectionData;
 
   @override
@@ -50,9 +51,9 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
   }
 
   Future<String> getTranslation(String text) async {
-
     final modelManager = OnDeviceTranslatorModelManager();
-    if (await modelManager.isModelDownloaded(TranslateLanguage.russian.bcpCode)) {
+    if (await modelManager
+        .isModelDownloaded(TranslateLanguage.russian.bcpCode)) {
       await modelManager.downloadModel(TranslateLanguage.russian.bcpCode);
     }
 
@@ -66,7 +67,9 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
 
   Future<void> _sendMessage() async {
     try {
-      await Gemini.init(apiKey: "AIzaSyBPc-P9xs_4CSiqXzawDxv5adniQ1ewLyE", enableDebugging: true);
+      await Gemini.init(
+          apiKey: "AIzaSyBPc-P9xs_4CSiqXzawDxv5adniQ1ewLyE",
+          enableDebugging: true);
       final gemini = Gemini.instance;
 
       final generationConfig = GenerationConfig(
@@ -83,8 +86,8 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
             parts: [
               Parts(
                 text:
-                '''Imagine you are a service technician inspecting an articulated truck. Below are the details of various parts that need inspection. Based on the provided information, offer detailed recommendations for repair. For example, if the windshield is broken or the oil color is abnormal, specify the necessary repairs and maintenance steps.''' +
-                    widget.inspectionData.toString(),
+                    '''Imagine you are a service technician inspecting an articulated truck. Below are the details of various parts that need inspection. Based on the provided information, offer detailed recommendations for repair. For example, if the windshield is broken or the oil color is abnormal, specify the necessary repairs and maintenance steps.''' +
+                        widget.inspectionData.toString(),
               )
             ],
             role: 'пользователь', // Role in Russian
@@ -93,14 +96,15 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
       );
 
       getTranslation(value?.output ?? 'Нет вывода').then((text) => {
-        setState(() {
-          responseText = text;
-        })
-      });
+            setState(() {
+              responseText = text;
+            })
+          });
     } catch (e, stackTrace) {
       log('Ошибка чата Gemini', error: e, stackTrace: stackTrace);
       setState(() {
-        responseText = 'У вас нет стабильного подключения к интернету.'; // Russian translation
+        responseText =
+            'У вас нет стабильного подключения к интернету.'; // Russian translation
       });
     }
   }
@@ -120,12 +124,17 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
           build: (pw.Context context) => [
             pw.Container(
               margin: const pw.EdgeInsets.only(bottom: 10),
-              child: InspectionSummaryPdf(inspectionData: widget.inspectionData),
+              child:
+                  InspectionSummaryPdf(inspectionData: widget.inspectionData),
             ),
-            pw.Header(level: 1, text: 'Детали инспекции', textStyle: pw.TextStyle(font: ttf)), // Russian translation
+            pw.Header(
+                level: 1,
+                text: 'Детали инспекции',
+                textStyle: pw.TextStyle(font: ttf)), // Russian translation
             pw.Padding(padding: const pw.EdgeInsets.only(top: 10)),
             pw.Paragraph(
-              style: pw.TextStyle(fontSize: 16, color: PdfColors.black, font: ttf),
+              style:
+                  pw.TextStyle(fontSize: 16, color: PdfColors.black, font: ttf),
               text: response,
             ),
           ],
@@ -133,17 +142,20 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
       );
     }
 
-    final brakePrediction = await getTranslation(await BrakeModel().getPrediction(widget.inspectionData));
-    final enginePrediction = await getTranslation(await EngineModel().getPrediction(widget.inspectionData));
-    final batteryPrediction = await getTranslation(await BatteryModel().getPrediction(widget.inspectionData));
-    final exteriorPrediction = await getTranslation(await ExteriorModel().getPrediction(widget.inspectionData));
-    final tyrePrediction = await getTranslation(await TyreModel().getPrediction(widget.inspectionData));
-
+    final brakePrediction = await getTranslation(
+        await BrakeModel().getPrediction(widget.inspectionData));
+    final enginePrediction = await getTranslation(
+        await EngineModel().getPrediction(widget.inspectionData));
+    final batteryPrediction = await getTranslation(
+        await BatteryModel().getPrediction(widget.inspectionData));
+    final exteriorPrediction = await getTranslation(
+        await ExteriorModel().getPrediction(widget.inspectionData));
+    final tyrePrediction = await getTranslation(
+        await TyreModel().getPrediction(widget.inspectionData));
 
     pdf.addPage(
       pw.Page(
         build: (context) {
-
           pw.Widget _buildSectionTitle(String title, String subtitle) {
             return pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -179,12 +191,20 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle('Рекомендации по тормозам', brakePrediction), // Translated to Russian
-              _buildSectionTitle('Рекомендации по двигателю', enginePrediction), // Translated to Russian
-              _buildSectionTitle('Рекомендации по батарее', batteryPrediction), // Translated to Russian
-              _buildSectionTitle('Рекомендации по экстерьеру', exteriorPrediction), // Translated to Russian
-              _buildSectionTitle('Рекомендации по шинам', tyrePrediction), // Translated to Russian
-              _buildSectionTitle('Заметки по инспекции', widget.inspectionData.inspectionNotes), // Translated to Russian
+              _buildSectionTitle('Рекомендации по тормозам',
+                  brakePrediction), // Translated to Russian
+              _buildSectionTitle('Рекомендации по двигателю',
+                  enginePrediction), // Translated to Russian
+              _buildSectionTitle('Рекомендации по батарее',
+                  batteryPrediction), // Translated to Russian
+              _buildSectionTitle('Рекомендации по экстерьеру',
+                  exteriorPrediction), // Translated to Russian
+              _buildSectionTitle('Рекомендации по шинам',
+                  tyrePrediction), // Translated to Russian
+              _buildSectionTitle(
+                  'Заметки по инспекции',
+                  widget
+                      .inspectionData.inspectionNotes), // Translated to Russian
             ],
           );
         },
@@ -211,8 +231,6 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
     }
 
     await OpenFile.open(file.path);
-
-
   }
 
   @override
@@ -236,10 +254,10 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
             InspectionSummaryPage(inspectionData: widget.inspectionData),
             Text(
               'Результаты инспекции',
-              style: Theme.of(context).textTheme.headline5?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
-              ),
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent,
+                  ),
             ),
             const SizedBox(height: 20),
             FutureBuilder(
@@ -255,18 +273,18 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
                   return MarkdownBody(
                     data: snapshot.data as String,
                     styleSheet: MarkdownStyleSheet(
-                      p: Theme.of(context).textTheme.bodyText1?.copyWith(
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
-                      h1: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
-                      ),
-                      h2: Theme.of(context).textTheme.headline6?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
-                      ),
+                      p: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                      h1: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent,
+                          ),
+                      h2: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent,
+                          ),
                     ),
                   );
                 }
@@ -275,10 +293,10 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
             const SizedBox(height: 20),
             Text(
               'Рекомендуемые действия',
-              style: Theme.of(context).textTheme.headline5?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
             ),
             TextField(
               controller: _controller,
@@ -311,13 +329,17 @@ class InspectionSummaryPage extends StatelessWidget {
         children: [
           _buildSectionTitle('Информация о шинах', inspectionData.tireImages),
           _buildTireInfo(),
-          _buildSectionTitle('Информация о батарее', inspectionData.batteryImages),
+          _buildSectionTitle(
+              'Информация о батарее', inspectionData.batteryImages),
           _buildBatteryInfo(),
-          _buildSectionTitle('Внешняя информация', inspectionData.exteriorImages),
+          _buildSectionTitle(
+              'Внешняя информация', inspectionData.exteriorImages),
           _buildExteriorInfo(),
-          _buildSectionTitle('Информация о тормозах', inspectionData.brakeImages),
+          _buildSectionTitle(
+              'Информация о тормозах', inspectionData.brakeImages),
           _buildBrakeInfo(),
-          _buildSectionTitle('Информация о двигателе', inspectionData.engineImages),
+          _buildSectionTitle(
+              'Информация о двигателе', inspectionData.engineImages),
           _buildEngineInfo(),
           InspectionResultsWidget(data: inspectionData),
         ],
@@ -369,14 +391,22 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Давление передней левой шины', '${inspectionData.leftFrontTirePressure} psi'),
-          _buildListTile('Давление передней правой шины', '${inspectionData.rightFrontTirePressure} psi'),
-          _buildListTile('Состояние передней левой шины', inspectionData.leftFrontTireCondition),
-          _buildListTile('Состояние передней правой шины', inspectionData.rightFrontTireCondition),
-          _buildListTile('Давление задней левой шины', '${inspectionData.leftRearTirePressure} psi'),
-          _buildListTile('Давление задней правой шины', '${inspectionData.rightRearTirePressure} psi'),
-          _buildListTile('Состояние задней левой шины', inspectionData.leftRearTireCondition),
-          _buildListTile('Состояние задней правой шины', inspectionData.rightRearTireCondition),
+          _buildListTile('Давление передней левой шины',
+              '${inspectionData.leftFrontTirePressure} psi'),
+          _buildListTile('Давление передней правой шины',
+              '${inspectionData.rightFrontTirePressure} psi'),
+          _buildListTile('Состояние передней левой шины',
+              inspectionData.leftFrontTireCondition),
+          _buildListTile('Состояние передней правой шины',
+              inspectionData.rightFrontTireCondition),
+          _buildListTile('Давление задней левой шины',
+              '${inspectionData.leftRearTirePressure} psi'),
+          _buildListTile('Давление задней правой шины',
+              '${inspectionData.rightRearTirePressure} psi'),
+          _buildListTile('Состояние задней левой шины',
+              inspectionData.leftRearTireCondition),
+          _buildListTile('Состояние задней правой шины',
+              inspectionData.rightRearTireCondition),
         ],
       ),
     );
@@ -387,11 +417,16 @@ class InspectionSummaryPage extends StatelessWidget {
       child: Column(
         children: [
           _buildListTile('Марка батареи', inspectionData.batteryMake),
-          _buildListTile('Дата замены батареи', inspectionData.batteryReplacementDate),
-          _buildListTile('Напряжение батареи', '${inspectionData.batteryVoltage} V'),
-          _buildListTile('Уровень воды в батарее', inspectionData.batteryWaterLevel),
-          _buildListTile('Повреждение батареи', inspectionData.batteryDamage ? 'Да' : 'Нет'),
-          _buildListTile('Утечка батареи', inspectionData.batteryLeak ? 'Да' : 'Нет'),
+          _buildListTile(
+              'Дата замены батареи', inspectionData.batteryReplacementDate),
+          _buildListTile(
+              'Напряжение батареи', '${inspectionData.batteryVoltage} V'),
+          _buildListTile(
+              'Уровень воды в батарее', inspectionData.batteryWaterLevel),
+          _buildListTile('Повреждение батареи',
+              inspectionData.batteryDamage ? 'Да' : 'Нет'),
+          _buildListTile(
+              'Утечка батареи', inspectionData.batteryLeak ? 'Да' : 'Нет'),
         ],
       ),
     );
@@ -401,9 +436,12 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Внешнее повреждение', inspectionData.exteriorDamage ? 'Да' : 'Нет'),
-          _buildListTile('Заметки по внешнему виду', inspectionData.exteriorNotes),
-          _buildListTile('Утечка масла в подвеске', inspectionData.oilLeakSuspension ? 'Да' : 'Нет'),
+          _buildListTile('Внешнее повреждение',
+              inspectionData.exteriorDamage ? 'Да' : 'Нет'),
+          _buildListTile(
+              'Заметки по внешнему виду', inspectionData.exteriorNotes),
+          _buildListTile('Утечка масла в подвеске',
+              inspectionData.oilLeakSuspension ? 'Да' : 'Нет'),
         ],
       ),
     );
@@ -413,12 +451,18 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Уровень тормозной жидкости', inspectionData.brakeFluidLevel),
-          _buildListTile('Состояние передних тормозов', inspectionData.brakeConditionFront),
-          _buildListTile('Состояние задних тормозов', inspectionData.brakeConditionRear),
-          _buildListTile('Состояние аварийного тормоза', inspectionData.emergencyBrakeCondition),
-          _buildListTile('Состояние тормозной жидкости', inspectionData.brakeFluidCondition),
-          _buildListTile('Цвет тормозной жидкости', inspectionData.brakeFluidColor),
+          _buildListTile(
+              'Уровень тормозной жидкости', inspectionData.brakeFluidLevel),
+          _buildListTile('Состояние передних тормозов',
+              inspectionData.brakeConditionFront),
+          _buildListTile(
+              'Состояние задних тормозов', inspectionData.brakeConditionRear),
+          _buildListTile('Состояние аварийного тормоза',
+              inspectionData.emergencyBrakeCondition),
+          _buildListTile('Состояние тормозной жидкости',
+              inspectionData.brakeFluidCondition),
+          _buildListTile(
+              'Цвет тормозной жидкости', inspectionData.brakeFluidColor),
         ],
       ),
     );
@@ -428,11 +472,16 @@ class InspectionSummaryPage extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          _buildListTile('Повреждение двигателя', inspectionData.engineDamage ? 'Да' : 'Нет'),
-          _buildListTile('Заметки о повреждении двигателя', inspectionData.engineDamageNotes),
-          _buildListTile('Состояние масла в двигателе', inspectionData.engineOilCondition),
-          _buildListTile('Цвет масла в двигателе', inspectionData.engineOilColor),
-          _buildListTile('Утечка масла в двигателе', inspectionData.engineOilLeak ? 'Да' : 'Нет'),
+          _buildListTile('Повреждение двигателя',
+              inspectionData.engineDamage ? 'Да' : 'Нет'),
+          _buildListTile('Заметки о повреждении двигателя',
+              inspectionData.engineDamageNotes),
+          _buildListTile(
+              'Состояние масла в двигателе', inspectionData.engineOilCondition),
+          _buildListTile(
+              'Цвет масла в двигателе', inspectionData.engineOilColor),
+          _buildListTile('Утечка масла в двигателе',
+              inspectionData.engineOilLeak ? 'Да' : 'Нет'),
         ],
       ),
     );
