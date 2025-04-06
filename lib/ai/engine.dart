@@ -5,7 +5,6 @@ import 'package:truck_check/models/inspection_data.dart';
 
 class EngineModel {
   Future<String> getPrediction(InspectionData data) async {
-
     // Load the TFLite interpreter
     final interpreter = await tfl.Interpreter.fromAsset("assets/engine.tflite");
 
@@ -15,19 +14,26 @@ class EngineModel {
     int engineOilColor = (data.engineOilColor == "Black")
         ? 0
         : (data.engineOilColor == "Brown")
-        ? 1
-        : 2;
+            ? 1
+            : 2;
     int brakeFluidCondition = (data.brakeFluidCondition == "Bad") ? 0 : 1;
     int brakeFluidColor = (data.brakeFluidColor == "Black")
         ? 0
         : (data.brakeFluidColor == "Brown")
-        ? 1
-        : 2;
+            ? 1
+            : 2;
     int engineOilLeak = data.engineOilLeak ? 1 : 0;
 
     // Prepare the input tensor
     final input = [
-      [engineDamage, engineOilCondition, engineOilColor, brakeFluidCondition, brakeFluidColor, engineOilLeak]
+      [
+        engineDamage,
+        engineOilCondition,
+        engineOilColor,
+        brakeFluidCondition,
+        brakeFluidColor,
+        engineOilLeak
+      ]
     ];
 
     // Prepare the output tensor
@@ -41,13 +47,27 @@ class EngineModel {
 
     // Get the recommendation labels
     List<String> recommendations = [
-      'Adjust tension', 'Change oil', 'Check fittings', 'Check levels', 'Check seals',
-      'Clean connections', 'Flush system', 'Inspect hoses', 'Replace cap', 'Replace filter',
-      'Replace gasket', 'Replace seals'
+      'Adjust tension',
+      'Change oil',
+      'Check fittings',
+      'Check levels',
+      'Check seals',
+      'Clean connections',
+      'Flush system',
+      'Inspect hoses',
+      'Replace cap',
+      'Replace filter',
+      'Replace gasket',
+      'Replace seals'
     ];
 
     // Find the index of the highest probability
-    int recommendedIndex = output[0].indexOf(output[0].reduce((double curr, double next) => curr > next ? curr : next));
+    int recommendedIndex = output[0].indexOf(output[0]
+        .reduce((double curr, double next) => curr > next ? curr : next));
+
+    print("RECOMENDATION INDEX");
+
+    print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }

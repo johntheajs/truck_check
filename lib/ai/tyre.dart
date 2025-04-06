@@ -5,20 +5,44 @@ import 'package:truck_check/models/inspection_data.dart';
 
 class TyreModel {
   Future<String> getPrediction(InspectionData data) async {
-
     final interpreter = await tfl.Interpreter.fromAsset("assets/tyre.tflite");
 
     int leftFrontTirePressure = data.leftFrontTirePressure;
     int rightFrontTirePressure = data.rightFrontTirePressure;
-    int leftFrontTireCondition = (data.leftFrontTireCondition == "Good") ? 0 : (data.leftFrontTireCondition == "Needs Replacement")?1:2;
-    int rightFrontTireCondition = (data.rightFrontTireCondition == "Good") ? 0 : (data.leftFrontTireCondition == "Needs Replacement")?1:2;
+    int leftFrontTireCondition = (data.leftFrontTireCondition == "Good")
+        ? 0
+        : (data.leftFrontTireCondition == "Needs Replacement")
+            ? 1
+            : 2;
+    int rightFrontTireCondition = (data.rightFrontTireCondition == "Good")
+        ? 0
+        : (data.leftFrontTireCondition == "Needs Replacement")
+            ? 1
+            : 2;
     int leftRearTirePressure = data.leftRearTirePressure;
     int rightRearTirePressure = data.rightRearTirePressure;
-    int leftRearTireCondition = (data.leftRearTireCondition == "Good") ? 0 : (data.leftRearTireCondition == "Needs Replacement")?1:2;
-    int rightRearTireCondition = (data.rightRearTireCondition == "Good") ? 0 : (data.leftRearTireCondition == "Needs Replacement")?1:2;
+    int leftRearTireCondition = (data.leftRearTireCondition == "Good")
+        ? 0
+        : (data.leftRearTireCondition == "Needs Replacement")
+            ? 1
+            : 2;
+    int rightRearTireCondition = (data.rightRearTireCondition == "Good")
+        ? 0
+        : (data.leftRearTireCondition == "Needs Replacement")
+            ? 1
+            : 2;
 
     final input = [
-      [leftFrontTirePressure, rightFrontTirePressure, leftFrontTireCondition, rightFrontTireCondition, leftRearTirePressure, rightRearTirePressure, leftRearTireCondition, rightRearTireCondition]
+      [
+        leftFrontTirePressure,
+        rightFrontTirePressure,
+        leftFrontTireCondition,
+        rightFrontTireCondition,
+        leftRearTirePressure,
+        rightRearTirePressure,
+        leftRearTireCondition,
+        rightRearTireCondition
+      ]
     ];
 
     var output = List.filled(39, 0).reshape([1, 39]);
@@ -69,11 +93,15 @@ class TyreModel {
       'The tires are generally in good condition with acceptable pressures, except for the left rear tire which needs replacement. Regular monitoring and maintenance recommended.',
       'The tires are generally in good condition with acceptable pressures. Regular monitoring recommended.',
       'Tire pressures vary; monitor for any anomalies.',
-      ''];
+      ''
+    ];
 
+    int recommendedIndex = output[0].indexOf(output[0]
+        .reduce((double curr, double next) => curr > next ? curr : next));
 
+    print("RECOMENDATION INDEX");
 
-    int recommendedIndex = output[0].indexOf(output[0].reduce((double curr, double next) => curr > next ? curr : next));
+    print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }

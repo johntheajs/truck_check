@@ -5,15 +5,30 @@ import 'package:truck_check/models/inspection_data.dart';
 
 class BrakeModel {
   Future<String> getPrediction(InspectionData data) async {
-
     final interpreter = await tfl.Interpreter.fromAsset("assets/brake.tflite");
 
-    int brakeFluidLevel = data.brakeFluidLevel=='Good'?0:data.brakeFluidLevel=='Ok'?2:1;
-    int brakeConditionFront = data.brakeConditionFront=='Good'?0:data.brakeConditionFront=='Ok'?2:1;
-    int brakeConditionRear = data.brakeConditionRear=='Good'?0:data.brakeConditionRear=='Ok'?2:1;
-    int emergencyBrake = data.emergencyBrakeCondition=='Good'?0:data.emergencyBrakeCondition=='Ok'?2:1;
+    int brakeFluidLevel = data.brakeFluidLevel == 'Good'
+        ? 0
+        : data.brakeFluidLevel == 'Ok'
+            ? 2
+            : 1;
+    int brakeConditionFront = data.brakeConditionFront == 'Good'
+        ? 0
+        : data.brakeConditionFront == 'Ok'
+            ? 2
+            : 1;
+    int brakeConditionRear = data.brakeConditionRear == 'Good'
+        ? 0
+        : data.brakeConditionRear == 'Ok'
+            ? 2
+            : 1;
+    int emergencyBrake = data.emergencyBrakeCondition == 'Good'
+        ? 0
+        : data.emergencyBrakeCondition == 'Ok'
+            ? 2
+            : 1;
     final input = [
-      [brakeFluidLevel,brakeConditionFront, brakeConditionRear, emergencyBrake]
+      [brakeFluidLevel, brakeConditionFront, brakeConditionRear, emergencyBrake]
     ];
 
     var output = List.filled(7, 0).reshape([1, 7]);
@@ -35,9 +50,11 @@ class BrakeModel {
       "Low emergency brake, both brakes need replacement, low fluid."
     ];
 
+    int recommendedIndex = output[0].indexOf(output[0]
+        .reduce((double curr, double next) => curr > next ? curr : next));
 
-
-    int recommendedIndex = output[0].indexOf(output[0].reduce((double curr, double next) => curr > next ? curr : next));
+    print("RECOMENDATION INDEX");
+    print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }

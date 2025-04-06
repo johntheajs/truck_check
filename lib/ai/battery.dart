@@ -5,20 +5,31 @@ import 'package:truck_check/models/inspection_data.dart';
 
 class BatteryModel {
   Future<String> getPrediction(InspectionData data) async {
-
     // Load the TFLite interpreter
-    final interpreter = await tfl.Interpreter.fromAsset("assets/battery.tflite");
+    final interpreter =
+        await tfl.Interpreter.fromAsset("assets/battery.tflite");
 
     // Map inspection data to integer values
     int batteryMake = data.batteryMake == 'CAT' ? 0 : 1;
     int batteryVoltage = data.batteryVoltage;
-    int batteryWaterLevel = data.batteryWaterLevel == 'Good' ? 0: data.batteryWaterLevel=='Low' ? 1: 2;
-    int batteryCondition = data.batteryDamage == 'Yes'?1:0;
-    int batteryLeak = data.batteryLeak == 'Yes'?1:0;
+    int batteryWaterLevel = data.batteryWaterLevel == 'Good'
+        ? 0
+        : data.batteryWaterLevel == 'Low'
+            ? 1
+            : 2;
+    int batteryCondition = data.batteryDamage == 'Yes' ? 1 : 0;
+    int batteryLeak = data.batteryLeak == 'Yes' ? 1 : 0;
 
     // Prepare the input tensor
     final input = [
-      [batteryMake, 1, batteryVoltage, batteryWaterLevel, batteryCondition, batteryLeak]
+      [
+        batteryMake,
+        1,
+        batteryVoltage,
+        batteryWaterLevel,
+        batteryCondition,
+        batteryLeak
+      ]
     ];
 
     // Prepare the output tensor
@@ -79,9 +90,12 @@ class BatteryModel {
       "Battery voltage slightly low, water level needs checking. Replacement not needed immediately."
     ];
 
-
     // Find the index of the highest probability
-    int recommendedIndex = output[0].indexOf(output[0].reduce((double curr, double next) => curr > next ? curr : next));
+    int recommendedIndex = output[0].indexOf(output[0]
+        .reduce((double curr, double next) => curr > next ? curr : next));
+    print("RECOMENDATION INDEX");
+
+    print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }
