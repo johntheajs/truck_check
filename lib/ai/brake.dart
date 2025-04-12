@@ -5,7 +5,9 @@ import 'package:truck_check/models/inspection_data.dart';
 
 class BrakeModel {
   Future<String> getPrediction(InspectionData data) async {
-    final interpreter = await tfl.Interpreter.fromAsset("assets/brake.tflite");
+    // print("🧪 Inspection data: ${data.toString()}");
+
+    final interpreter = await tfl.Interpreter.fromAsset("brake.tflite");
 
     int brakeFluidLevel = data.brakeFluidLevel == 'Good'
         ? 0
@@ -28,13 +30,22 @@ class BrakeModel {
             ? 2
             : 1;
     final input = [
-      [brakeFluidLevel, brakeConditionFront, brakeConditionRear, emergencyBrake]
+      [
+        brakeFluidLevel.toDouble(),
+        brakeConditionFront.toDouble(),
+        brakeConditionRear.toDouble(),
+        emergencyBrake.toDouble()
+      ]
     ];
+
+    print(input);
+    print(data);
 
     var output = List.filled(7, 0).reshape([1, 7]);
 
     // Run the model
     interpreter.run(input, output);
+    // print("Intrepreting");
 
     // Dispose of the interpreter
     interpreter.close();
@@ -50,11 +61,15 @@ class BrakeModel {
       "Low emergency brake, both brakes need replacement, low fluid."
     ];
 
-    int recommendedIndex = output[0].indexOf(output[0]
-        .reduce((double curr, double next) => curr > next ? curr : next));
+    // int recommendedIndex = output[0].indexOf(output[0]
+    //     .reduce((double curr, double next) => curr > next ? curr : next));
 
-    print("RECOMENDATION INDEX");
-    print(recommendedIndex);
+    double maxVal = (output[0] as List<double>)
+        .reduce((curr, next) => curr > next ? curr : next);
+    int recommendedIndex = (output[0] as List<double>).indexOf(maxVal);
+
+    // print("RECOMENDATION INDEX");
+    // print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }

@@ -5,9 +5,10 @@ import 'package:truck_check/models/inspection_data.dart';
 
 class BatteryModel {
   Future<String> getPrediction(InspectionData data) async {
+    // print("🧪 Inspection data: ${data.toString()}");
+
     // Load the TFLite interpreter
-    final interpreter =
-        await tfl.Interpreter.fromAsset("assets/battery.tflite");
+    final interpreter = await tfl.Interpreter.fromAsset("battery.tflite");
 
     // Map inspection data to integer values
     int batteryMake = data.batteryMake == 'CAT' ? 0 : 1;
@@ -23,20 +24,24 @@ class BatteryModel {
     // Prepare the input tensor
     final input = [
       [
-        batteryMake,
-        1,
-        batteryVoltage,
-        batteryWaterLevel,
-        batteryCondition,
-        batteryLeak
+        batteryMake.toDouble(),
+        1.toDouble(),
+        batteryVoltage.toDouble(),
+        batteryWaterLevel.toDouble(),
+        batteryCondition.toDouble(),
+        batteryLeak.toDouble()
       ]
     ];
 
     // Prepare the output tensor
     var output = List.filled(45, 0).reshape([1, 45]);
 
+    // print(input);
+    // print(data);
+
     // Run the model
     interpreter.run(input, output);
+    // print("Intrepreting");
 
     // Dispose of the interpreter
     interpreter.close();
@@ -90,12 +95,17 @@ class BatteryModel {
       "Battery voltage slightly low, water level needs checking. Replacement not needed immediately."
     ];
 
-    // Find the index of the highest probability
-    int recommendedIndex = output[0].indexOf(output[0]
-        .reduce((double curr, double next) => curr > next ? curr : next));
-    print("RECOMENDATION INDEX");
+    // // Find the index of the highest probability
+    // int recommendedIndex = output[0].indexOf(output[0]
+    //     .reduce((double curr, double next) => curr > next ? curr : next));
 
-    print(recommendedIndex);
+    double maxVal = (output[0] as List<double>)
+        .reduce((curr, next) => curr > next ? curr : next);
+    int recommendedIndex = (output[0] as List<double>).indexOf(maxVal);
+
+    // print("RECOMENDATION INDEX");
+
+    // print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }

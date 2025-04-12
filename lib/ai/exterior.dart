@@ -5,20 +5,25 @@ import 'package:truck_check/models/inspection_data.dart';
 
 class ExteriorModel {
   Future<String> getPrediction(InspectionData data) async {
-    final interpreter =
-        await tfl.Interpreter.fromAsset("assets/exterior.tflite");
+    // print("🧪 Inspection data: ${data.toString()}");
+
+    final interpreter = await tfl.Interpreter.fromAsset("exterior.tflite");
 
     int exteriorDamage = data.exteriorDamage == 'No' ? 0 : 1;
     int oilLeakSuspension = data.oilLeakSuspension == 'No' ? 0 : 1;
 
     final input = [
-      [0, exteriorDamage, oilLeakSuspension]
+      [0.toDouble(), exteriorDamage.toDouble(), oilLeakSuspension.toDouble()]
     ];
 
     var output = List.filled(7, 0).reshape([1, 7]);
 
+    // print(input);
+    // print(data);
+
     // Run the model
     interpreter.run(input, output);
+    // print("Intrepreting");
 
     // Dispose of the interpreter
     interpreter.close();
@@ -34,11 +39,15 @@ class ExteriorModel {
       'Repair exterior damage' // 6
     ];
 
-    int recommendedIndex = output[0].indexOf(output[0]
-        .reduce((double curr, double next) => curr > next ? curr : next));
+    // int recommendedIndex = output[0].indexOf(output[0]
+    //     .reduce((double curr, double next) => curr > next ? curr : next));
 
-    print("RECOMENDATION INDEX");
-    print(recommendedIndex);
+    double maxVal = (output[0] as List<double>)
+        .reduce((curr, next) => curr > next ? curr : next);
+    int recommendedIndex = (output[0] as List<double>).indexOf(maxVal);
+
+    // print("RECOMENDATION INDEX");
+    // print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }

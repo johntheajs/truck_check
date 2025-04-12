@@ -6,7 +6,9 @@ import 'package:truck_check/models/inspection_data.dart';
 class EngineModel {
   Future<String> getPrediction(InspectionData data) async {
     // Load the TFLite interpreter
-    final interpreter = await tfl.Interpreter.fromAsset("assets/engine.tflite");
+    // print("🧪 Inspection data: ${data.toString()}");
+
+    final interpreter = await tfl.Interpreter.fromAsset("engine.tflite");
 
     // Map inspection data to integer values
     int engineDamage = data.engineDamage ? 1 : 0;
@@ -27,20 +29,24 @@ class EngineModel {
     // Prepare the input tensor
     final input = [
       [
-        engineDamage,
-        engineOilCondition,
-        engineOilColor,
-        brakeFluidCondition,
-        brakeFluidColor,
-        engineOilLeak
+        engineDamage.toDouble(),
+        engineOilCondition.toDouble(),
+        engineOilColor.toDouble(),
+        brakeFluidCondition.toDouble(),
+        brakeFluidColor.toDouble(),
+        engineOilLeak.toDouble()
       ]
     ];
 
     // Prepare the output tensor
     var output = List.filled(12, 0).reshape([1, 12]);
 
+    // print(input);
+    // print(data);
+
     // Run the model
     interpreter.run(input, output);
+    // print("Intrepreting");
 
     // Dispose of the interpreter
     interpreter.close();
@@ -61,13 +67,17 @@ class EngineModel {
       'Replace seals'
     ];
 
-    // Find the index of the highest probability
-    int recommendedIndex = output[0].indexOf(output[0]
-        .reduce((double curr, double next) => curr > next ? curr : next));
+    // // Find the index of the highest probability
+    // int recommendedIndex = output[0].indexOf(output[0]
+    //     .reduce((double curr, double next) => curr > next ? curr : next));
 
-    print("RECOMENDATION INDEX");
+    double maxVal = (output[0] as List<double>)
+        .reduce((curr, next) => curr > next ? curr : next);
+    int recommendedIndex = (output[0] as List<double>).indexOf(maxVal);
 
-    print(recommendedIndex);
+    // print("RECOMENDATION INDEX");
+
+    // print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }

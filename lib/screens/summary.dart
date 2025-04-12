@@ -720,7 +720,7 @@ class InspectionResultsWidget extends StatelessWidget {
           return _buildLoadingCard(title);
         } else {
           if (snapshot.hasError) {
-            return _buildErrorCard(title);
+            return _buildErrorCard(title, snapshot.error);
           } else {
             return _buildPredictionCard(
                 title: title, prediction: snapshot.data ?? 'No data');
@@ -741,13 +741,13 @@ class InspectionResultsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorCard(String title) {
+  Widget _buildErrorCard(String title, [Object? error]) {
     return Card(
       elevation: 3.0,
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
         title: Text(title),
-        subtitle: Text('Error fetching data'),
+        subtitle: Text('Error fetching data\n${error ?? 'Unknown error'}'),
       ),
     );
   }

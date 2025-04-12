@@ -5,7 +5,9 @@ import 'package:truck_check/models/inspection_data.dart';
 
 class TyreModel {
   Future<String> getPrediction(InspectionData data) async {
-    final interpreter = await tfl.Interpreter.fromAsset("assets/tyre.tflite");
+    // print("🧪 Inspection data: ${data.toString()}");
+
+    final interpreter = await tfl.Interpreter.fromAsset("tyre.tflite");
 
     int leftFrontTirePressure = data.leftFrontTirePressure;
     int rightFrontTirePressure = data.rightFrontTirePressure;
@@ -34,21 +36,25 @@ class TyreModel {
 
     final input = [
       [
-        leftFrontTirePressure,
-        rightFrontTirePressure,
-        leftFrontTireCondition,
-        rightFrontTireCondition,
-        leftRearTirePressure,
-        rightRearTirePressure,
-        leftRearTireCondition,
-        rightRearTireCondition
+        leftFrontTirePressure.toDouble(),
+        rightFrontTirePressure.toDouble(),
+        leftFrontTireCondition.toDouble(),
+        rightFrontTireCondition.toDouble(),
+        leftRearTirePressure.toDouble(),
+        rightRearTirePressure.toDouble(),
+        leftRearTireCondition.toDouble(),
+        rightRearTireCondition.toDouble()
       ]
     ];
 
     var output = List.filled(39, 0).reshape([1, 39]);
 
+    // print(input);
+    // print(data);
+
     // Run the model
     interpreter.run(input, output);
+    // print("Intrepreting");
 
     // Dispose of the interpreter
     interpreter.close();
@@ -96,12 +102,16 @@ class TyreModel {
       ''
     ];
 
-    int recommendedIndex = output[0].indexOf(output[0]
-        .reduce((double curr, double next) => curr > next ? curr : next));
+    // int recommendedIndex = output[0].indexOf(output[0]
+    //     .reduce((double curr, double next) => curr > next ? curr : next));
 
-    print("RECOMENDATION INDEX");
+    double maxVal = (output[0] as List<double>)
+        .reduce((curr, next) => curr > next ? curr : next);
+    int recommendedIndex = (output[0] as List<double>).indexOf(maxVal);
 
-    print(recommendedIndex);
+    // print("RECOMENDATION INDEX");
+
+    // print(recommendedIndex);
 
     return recommendations[recommendedIndex];
   }
