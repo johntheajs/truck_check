@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:truck_check/main.dart';
-import 'package:truck_check/screens/complaints.dart';
+// import 'package:truck_check/screens/complaints.dart';
 
 import '../models/inspection_data.dart';
 

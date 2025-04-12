@@ -72,8 +72,9 @@ class ComplaintsScreen extends StatelessWidget {
         child: Column(
           children: [
             InspectionCard(
-              inspectionData: InspectionData(
-              url: 'https://s7d2.scene7.com/is/image/Caterpillar/CM20190610-c4f7f-ea3e5',
+                inspectionData: InspectionData(
+              url:
+                  'https://s7d2.scene7.com/is/image/Caterpillar/CM20190610-c4f7f-ea3e5',
               truckSerialNumber: '7301234',
               truckModel: '730',
               inspectionId: 1002,
@@ -82,13 +83,13 @@ class ComplaintsScreen extends StatelessWidget {
               geoCoordinates: '40.7128° N, 74.0060° W',
               serviceMeterHours: '1500 hours',
               inspectorSignature: 'John Doe',
-              customerName: 'ABC Construction',
+              customerName: 'L&T',
               catCustomerId: 'C12345',
-              )
-            ),
+            )),
             InspectionCard(
-              inspectionData: InspectionData(
-              url: 'https://s7d2.scene7.com/is/image/Caterpillar/CM20190610-c4f7f-ea3e5',
+                inspectionData: InspectionData(
+              url:
+                  'https://s7d2.scene7.com/is/image/Caterpillar/CM20190610-c4f7f-ea3e5',
               truckSerialNumber: '730EJ73245',
               truckModel: '730 EJ',
               inspectionId: 1003,
@@ -97,24 +98,24 @@ class ComplaintsScreen extends StatelessWidget {
               geoCoordinates: '34.0522° N, 118.2437° W',
               serviceMeterHours: '2000 hours',
               inspectorSignature: 'Jane Smith',
-              customerName: 'XYZ Landscaping',
+              customerName: 'HCC',
               catCustomerId: 'C67890',
-              )
-            ),
+            )),
             InspectionCard(
               inspectionData: InspectionData(
-              url: 'https://s7d2.scene7.com/is/image/Caterpillar/CM20190610-c4f7f-ea3e5',
-              truckSerialNumber: '73592849',
-              truckModel: '735',
-              inspectionId: 1004,
-              dateTime: '2024-06-29 2:00 PM',
-              location: 'Garage C',
-              geoCoordinates: '51.5074° N, 0.1278° W',
-              serviceMeterHours: '1800 hours',
-              inspectorSignature: 'Mike Johnson',
-              customerName: 'DEF Industries',
-              catCustomerId: 'C54321',
-            ),
+                url:
+                    'https://s7d2.scene7.com/is/image/Caterpillar/CM20190610-c4f7f-ea3e5',
+                truckSerialNumber: '73592849',
+                truckModel: '735',
+                inspectionId: 1004,
+                dateTime: '2024-06-29 2:00 PM',
+                location: 'Garage C',
+                geoCoordinates: '51.5074° N, 0.1278° W',
+                serviceMeterHours: '1800 hours',
+                inspectorSignature: 'Mike Johnson',
+                customerName: 'Reliance Infrastructure',
+                catCustomerId: 'C54321',
+              ),
             )
           ],
         ),
@@ -123,9 +124,6 @@ class ComplaintsScreen extends StatelessWidget {
   }
 }
 
-
-
-
 class ReportsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -133,9 +131,7 @@ class ReportsScreen extends StatelessWidget {
   }
 }
 
-
 class PDFListScreen extends StatefulWidget {
-
   PDFListScreen({Key? key}) : super(key: key);
 
   @override
@@ -184,7 +180,6 @@ class _PDFListScreenState extends State<PDFListScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -193,27 +188,26 @@ class _PDFListScreenState extends State<PDFListScreen> {
       ),
       body: pdfReferences != null
           ? ListView.builder(
-        itemCount: pdfReferences.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('PDF ${index + 1}'),
-            leading: Icon(Icons.picture_as_pdf),
-            trailing: IconButton(
-              icon: Icon(Icons.file_download),
-              onPressed: () {
-                downloadPDF(index);
+              itemCount: pdfReferences.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('PDF ${index + 1}'),
+                  leading: Icon(Icons.picture_as_pdf),
+                  trailing: IconButton(
+                    icon: Icon(Icons.file_download),
+                    onPressed: () {
+                      downloadPDF(index);
+                    },
+                  ),
+                );
               },
-            ),
-          );
-        },
-      )
+            )
           : Center(
-        child: CircularProgressIndicator(),
-      ),
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 }
-
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -237,90 +231,89 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot>(
-        future: _fetchProfileData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+      future: _fetchProfileData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
 
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(child: Text('No data found.'));
-          }
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return Center(child: Text('No data found.'));
+        }
 
-          // Extract data from Firestore document
-          var data = snapshot.data!.data() as Map<String, dynamic>;
-          String email = data['email'];
-          int inspectorId = data['inspectorId'];
-          String inspectorName = data['inspectorName'];
+        // Extract data from Firestore document
+        var data = snapshot.data!.data() as Map<String, dynamic>;
+        String email = data['email'];
+        int inspectorId = data['inspectorId'];
+        String inspectorName = data['inspectorName'];
 
-          return Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 30,),
-                Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage('assets/images/avatar.png'), // Replace with actual image path
-                  ),
+        return Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: 30,
+              ),
+              Center(
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage(
+                      'assets/images/avatar.png'), // Replace with actual image path
                 ),
-
-                SizedBox(height: 30),
-                ListTile(
-                  leading: Icon(Icons.email, color: Colors.blue),
-                  title: Text(
-                    'Email',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    email,
-                    style: TextStyle(fontSize: 16),
-                  ),
+              ),
+              SizedBox(height: 30),
+              ListTile(
+                leading: Icon(Icons.email, color: Colors.blue),
+                title: Text(
+                  'Email',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 16),
-                ListTile(
-                  leading: Icon(Icons.perm_identity, color: Colors.green),
-                  title: Text(
-                    'Inspector ID',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    inspectorId.toString(),
-                    style: TextStyle(fontSize: 16),
-                  ),
+                subtitle: Text(
+                  email,
+                  style: TextStyle(fontSize: 16),
                 ),
-                SizedBox(height: 16),
-                ListTile(
-                  leading: Icon(Icons.person, color: Colors.orange),
-                  title: Text(
-                    'Inspector Name',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    inspectorName,
-                    style: TextStyle(fontSize: 16),
-                  ),
+              ),
+              SizedBox(height: 16),
+              ListTile(
+                leading: Icon(Icons.perm_identity, color: Colors.green),
+                title: Text(
+                  'Inspector ID',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-              ],
-            ),
-          );
-
-        },
+                subtitle: Text(
+                  inspectorId.toString(),
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              SizedBox(height: 16),
+              ListTile(
+                leading: Icon(Icons.person, color: Colors.orange),
+                title: Text(
+                  'Inspector Name',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  inspectorName,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   // Fetch profile data from Firestore based on current user's email
   Future<DocumentSnapshot> _fetchProfileData() async {
-
     if (_currentUser == null) {
       throw Exception('User not authenticated.');
     }

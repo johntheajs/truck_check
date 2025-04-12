@@ -72,27 +72,32 @@ class _SummaryRussianPageState extends State<SummaryRussianPage> {
           enableDebugging: true);
       final gemini = Gemini.instance;
 
-      final generationConfig = GenerationConfig(
-        temperature: 1,
-        topP: 0.95,
-        topK: 64,
-        maxOutputTokens: 8192,
-      );
+      // final generationConfig = GenerationConfig(
+      //   temperature: 1,
+      //   topP: 0.95,
+      //   topK: 64,
+      //   maxOutputTokens: 8192,
+      // );
 
-      final value = await gemini.chat(
-        generationConfig: generationConfig,
-        [
-          Content(
-            parts: [
-              Parts(
-                text:
-                    '''Imagine you are a service technician inspecting an articulated truck. Below are the details of various parts that need inspection. Based on the provided information, offer detailed recommendations for repair. For example, if the windshield is broken or the oil color is abnormal, specify the necessary repairs and maintenance steps.''' +
-                        widget.inspectionData.toString(),
-              )
-            ],
-            role: 'пользователь', // Role in Russian
-          ),
-        ],
+      // final value = await gemini.chat(
+      //   generationConfig: generationConfig,
+      //   [
+      //     Content(
+      //       parts: [
+      //         Parts(
+      //           text:
+      //               '''Imagine you are a service technician inspecting an articulated truck. Below are the details of various parts that need inspection. Based on the provided information, offer detailed recommendations for repair. For example, if the windshield is broken or the oil color is abnormal, specify the necessary repairs and maintenance steps.''' +
+      //                   widget.inspectionData.toString(),
+      //         )
+      //       ],
+      //       role: 'пользователь', // Role in Russian
+      //     ),
+      //   ],
+      // );
+
+      final value = await gemini.text(
+        '''Imagine you are a service technician inspecting an articulated truck. Below are the details of various parts that need inspection. Based on the provided information, offer detailed recommendations for repair. For example, if the windshield is broken or the oil color is abnormal, specify the necessary repairs and maintenance steps.''' +
+            widget.inspectionData.toString(),
       );
 
       getTranslation(value?.output ?? 'Нет вывода').then((text) => {

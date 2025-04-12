@@ -8,11 +8,9 @@ import 'package:truck_check/screens/summary_french.dart';
 import 'package:truck_check/screens/summary_russian.dart';
 import 'package:truck_check/screens/summary_spanish.dart';
 
-
 class CarPartsScreen extends StatefulWidget {
-
   final inspectionData;
-  const CarPartsScreen ({ Key? key, this.inspectionData }): super(key: key);
+  const CarPartsScreen({Key? key, this.inspectionData}) : super(key: key);
 
   @override
   _CarPartsScreenState createState() => _CarPartsScreenState();
@@ -25,14 +23,13 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
   bool _showBrakesForm = false;
   bool _showEngineForm = false;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
-            'Car Parts Inspection',
+            'Backhoe Loader Inspection',
             style: TextStyle(color: Colors.black),
           ),
         ),
@@ -48,43 +45,48 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                   _showTiresForm = !_showTiresForm;
                 });
               }),
-              if (_showTiresForm) TiresForm(inspectionData: widget.inspectionData),
+              if (_showTiresForm)
+                TiresForm(inspectionData: widget.inspectionData),
               _buildHeader('Battery', () {
                 setState(() {
                   _showBatteryForm = !_showBatteryForm;
                 });
               }),
-              if (_showBatteryForm) BatteryForm(inspectionData: widget.inspectionData),
+              if (_showBatteryForm)
+                BatteryForm(inspectionData: widget.inspectionData),
               _buildHeader('Exterior', () {
                 setState(() {
                   _showExteriorForm = !_showExteriorForm;
                 });
               }),
-              if (_showExteriorForm) ExteriorForm(inspectionData: widget.inspectionData),
+              if (_showExteriorForm)
+                ExteriorForm(inspectionData: widget.inspectionData),
               _buildHeader('Brakes', () {
                 setState(() {
                   _showBrakesForm = !_showBrakesForm;
                 });
               }),
-              if (_showBrakesForm) BrakesForm(inspectionData: widget.inspectionData),
+              if (_showBrakesForm)
+                BrakesForm(inspectionData: widget.inspectionData),
               _buildHeader('Engine', () {
                 setState(() {
                   _showEngineForm = !_showEngineForm;
                 });
               }),
-              if (_showEngineForm) EngineForm(inspectionData: widget.inspectionData),
+              if (_showEngineForm)
+                EngineForm(inspectionData: widget.inspectionData),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    // MaterialPageRoute(
-                    //   builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: false,),
-                    // ),
+                      context,
+                      // MaterialPageRoute(
+                      //   builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: false,),
+                      // ),
                       MaterialPageRoute(
-                       builder: (context) => SummarySpanishPage(inspectionData: widget.inspectionData),
-                       )
-                  );
+                        builder: (context) => SummarySpanishPage(
+                            inspectionData: widget.inspectionData),
+                      ));
                 },
                 child: Text('Generate in Spanish'),
               ),
@@ -96,9 +98,9 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                       //   builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: false,),
                       // ),
                       MaterialPageRoute(
-                        builder: (context) => SummaryFrenchPage(inspectionData: widget.inspectionData),
-                      )
-                  );
+                        builder: (context) => SummaryFrenchPage(
+                            inspectionData: widget.inspectionData),
+                      ));
                 },
                 child: Text('Generate in French'),
               ),
@@ -106,11 +108,10 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                 onPressed: () {
                   Navigator.push(
                       context,
-
                       MaterialPageRoute(
-                        builder: (context) => SummaryRussianPage(inspectionData: widget.inspectionData),
-                      )
-                  );
+                        builder: (context) => SummaryRussianPage(
+                            inspectionData: widget.inspectionData),
+                      ));
                 },
                 child: Text('Generate in Russian'),
               ),
@@ -118,11 +119,10 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                 onPressed: () {
                   Navigator.push(
                       context,
-
                       MaterialPageRoute(
-                        builder: (context) => SummaryRussianPage(inspectionData: widget.inspectionData),
-                      )
-                  );
+                        builder: (context) => SummaryRussianPage(
+                            inspectionData: widget.inspectionData),
+                      ));
                 },
                 child: Text('Generate in Russian'),
               ),
@@ -131,7 +131,10 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: false,),
+                      builder: (context) => SummaryPage(
+                        inspectionData: widget.inspectionData,
+                        hindi: false,
+                      ),
                     ),
                   );
                 },
@@ -142,7 +145,10 @@ class _CarPartsScreenState extends State<CarPartsScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SummaryPage(inspectionData: widget.inspectionData, hindi: true,),
+                      builder: (context) => SummaryPage(
+                        inspectionData: widget.inspectionData,
+                        hindi: true,
+                      ),
                     ),
                   );
                 },
@@ -207,32 +213,37 @@ class _TiresFormState extends State<TiresForm> {
       children: [
         TextField(
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(labelText: 'Tire Pressure for Left Front (in psi)'),
+          decoration: InputDecoration(
+              labelText: 'Tire Pressure for Left Front (in psi)'),
           onChanged: (value) {
             setState(() {
               leftFrontPressure = int.tryParse(value);
-              widget.inspectionData.leftFrontTirePressure = leftFrontPressure ?? 0;
+              widget.inspectionData.leftFrontTirePressure =
+                  leftFrontPressure ?? 0;
             });
           },
         ),
         TextField(
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(labelText: 'Tire Pressure for Right Front (in psi)'),
+          decoration: InputDecoration(
+              labelText: 'Tire Pressure for Right Front (in psi)'),
           onChanged: (value) {
             setState(() {
               rightFrontPressure = int.tryParse(value);
-              widget.inspectionData.rightFrontTirePressure = rightFrontPressure ?? 0;
+              widget.inspectionData.rightFrontTirePressure =
+                  rightFrontPressure ?? 0;
             });
           },
         ),
         DropdownButtonFormField<String>(
           value: leftFrontCondition,
-          decoration: InputDecoration(labelText: 'Tire Condition for Left Front'),
+          decoration:
+              InputDecoration(labelText: 'Tire Condition for Left Front'),
           items: ['Good', 'Ok', 'Needs Replacement']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -243,12 +254,13 @@ class _TiresFormState extends State<TiresForm> {
         ),
         DropdownButtonFormField<String>(
           value: rightFrontCondition,
-          decoration: InputDecoration(labelText: 'Tire Condition for Right Front'),
+          decoration:
+              InputDecoration(labelText: 'Tire Condition for Right Front'),
           items: ['Good', 'Ok', 'Needs Replacement']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -263,28 +275,32 @@ class _TiresFormState extends State<TiresForm> {
           onChanged: (value) {
             setState(() {
               leftRearPressure = int.tryParse(value);
-              widget.inspectionData.leftRearTirePressure = leftRearPressure ?? 0;
+              widget.inspectionData.leftRearTirePressure =
+                  leftRearPressure ?? 0;
             });
           },
         ),
         TextField(
-          decoration: InputDecoration(labelText: 'Tire Pressure for Right Rear'),
+          decoration:
+              InputDecoration(labelText: 'Tire Pressure for Right Rear'),
           keyboardType: TextInputType.number,
           onChanged: (value) {
             setState(() {
               rightRearPressure = int.tryParse(value);
-              widget.inspectionData.rightRearTirePressure = rightRearPressure ?? 0;
+              widget.inspectionData.rightRearTirePressure =
+                  rightRearPressure ?? 0;
             });
           },
         ),
         DropdownButtonFormField<String>(
           value: leftRearCondition,
-          decoration: InputDecoration(labelText: 'Tire Condition for Left Rear'),
+          decoration:
+              InputDecoration(labelText: 'Tire Condition for Left Rear'),
           items: ['Good', 'Ok', 'Needs Replacement']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -295,12 +311,13 @@ class _TiresFormState extends State<TiresForm> {
         ),
         DropdownButtonFormField<String>(
           value: rightRearCondition,
-          decoration: InputDecoration(labelText: 'Tire Condition for Right Rear'),
+          decoration:
+              InputDecoration(labelText: 'Tire Condition for Right Rear'),
           items: ['Good', 'Ok', 'Needs Replacement']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -354,7 +371,6 @@ class _TiresFormState extends State<TiresForm> {
   }
 }
 
-
 class BatteryForm extends StatefulWidget {
   final InspectionData inspectionData;
 
@@ -378,7 +394,8 @@ class _BatteryFormState extends State<BatteryForm> {
     if (picked != null && picked != _selectedDate)
       setState(() {
         _selectedDate = picked;
-        widget.inspectionData.batteryReplacementDate = DateFormat('yyyy-MM-dd').format(picked);
+        widget.inspectionData.batteryReplacementDate =
+            DateFormat('yyyy-MM-dd').format(picked);
       });
   }
 
@@ -424,9 +441,9 @@ class _BatteryFormState extends State<BatteryForm> {
           decoration: InputDecoration(labelText: 'Battery Water Level'),
           items: ['Good', 'Ok', 'Low']
               .map((level) => DropdownMenuItem(
-            value: level,
-            child: Text(level),
-          ))
+                    value: level,
+                    child: Text(level),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -632,15 +649,17 @@ class _BrakesFormState extends State<BrakesForm> {
     _selectedFluidLevel = widget.inspectionData.brakeFluidLevel.isNotEmpty
         ? widget.inspectionData.brakeFluidLevel
         : null;
-    _selectedConditionFront = widget.inspectionData.brakeConditionFront.isNotEmpty
-        ? widget.inspectionData.brakeConditionFront
-        : null;
+    _selectedConditionFront =
+        widget.inspectionData.brakeConditionFront.isNotEmpty
+            ? widget.inspectionData.brakeConditionFront
+            : null;
     _selectedConditionRear = widget.inspectionData.brakeConditionRear.isNotEmpty
         ? widget.inspectionData.brakeConditionRear
         : null;
-    _selectedEmergencyBrakeCondition = widget.inspectionData.emergencyBrakeCondition.isNotEmpty
-        ? widget.inspectionData.emergencyBrakeCondition
-        : null;
+    _selectedEmergencyBrakeCondition =
+        widget.inspectionData.emergencyBrakeCondition.isNotEmpty
+            ? widget.inspectionData.emergencyBrakeCondition
+            : null;
   }
 
   @override
@@ -653,9 +672,9 @@ class _BrakesFormState extends State<BrakesForm> {
           decoration: InputDecoration(labelText: 'Brake Fluid Level'),
           items: ['Good', 'Ok', 'Low']
               .map((level) => DropdownMenuItem(
-            value: level,
-            child: Text(level),
-          ))
+                    value: level,
+                    child: Text(level),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -669,9 +688,9 @@ class _BrakesFormState extends State<BrakesForm> {
           decoration: InputDecoration(labelText: 'Brake Condition for Front'),
           items: ['Good', 'Ok', 'Needs Replacement']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -685,9 +704,9 @@ class _BrakesFormState extends State<BrakesForm> {
           decoration: InputDecoration(labelText: 'Brake Condition for Rear'),
           items: ['Good', 'Ok', 'Needs Replacement']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -701,9 +720,9 @@ class _BrakesFormState extends State<BrakesForm> {
           decoration: InputDecoration(labelText: 'Emergency Brake'),
           items: ['Good', 'Ok', 'Low']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -839,9 +858,9 @@ class _EngineFormState extends State<EngineForm> {
           decoration: InputDecoration(labelText: 'Engine Oil Condition'),
           items: ['Good', 'Bad']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -855,9 +874,9 @@ class _EngineFormState extends State<EngineForm> {
           decoration: InputDecoration(labelText: 'Engine Oil Color'),
           items: ['Clean', 'Brown', 'Black']
               .map((color) => DropdownMenuItem(
-            value: color,
-            child: Text(color),
-          ))
+                    value: color,
+                    child: Text(color),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -871,9 +890,9 @@ class _EngineFormState extends State<EngineForm> {
           decoration: InputDecoration(labelText: 'Brake Fluid Condition'),
           items: ['Good', 'Bad']
               .map((condition) => DropdownMenuItem(
-            value: condition,
-            child: Text(condition),
-          ))
+                    value: condition,
+                    child: Text(condition),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -887,9 +906,9 @@ class _EngineFormState extends State<EngineForm> {
           decoration: InputDecoration(labelText: 'Brake Fluid Color'),
           items: ['Clean', 'Brown', 'Black']
               .map((color) => DropdownMenuItem(
-            value: color,
-            child: Text(color),
-          ))
+                    value: color,
+                    child: Text(color),
+                  ))
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -955,7 +974,8 @@ class _EngineFormState extends State<EngineForm> {
   }
 }
 
-Future<void> _pickImage(BuildContext context, Function(File) onImagePicked) async {
+Future<void> _pickImage(
+    BuildContext context, Function(File) onImagePicked) async {
   final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
   if (pickedFile != null) {
     onImagePicked(File(pickedFile.path));
